@@ -1270,7 +1270,16 @@ let incoming = async function(message, socket) {
 }
 const socketInit = () => {
     window.resizeEvent();
-    let socket = new WebSocket(protocols[location.protocol] + global.serverAdd);
+    
+    // FIX: Force any local routing strings to use your public VPS IP instead
+    let targetServer = global.serverAdd;
+    if (targetServer.includes("0.0.0.0") || targetServer.includes("localhost")) {
+        targetServer = targetServer.replace("0.0.0.0", "153.75.91.27").replace("localhost", "153.75.91.27");
+    }
+
+    // Launch the socket using the cleaned IP target
+    let socket = new WebSocket(protocols[location.protocol] + "//" + targetServer);
+    
     // Set up our socket
     socket.binaryType = 'arraybuffer';
     socket.open = false;
