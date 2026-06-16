@@ -64,8 +64,12 @@ global.loadServerSelector = (serverData, text) => {
                 global.locationHash = location.hash;
                 localStorage.setItem("lastServer", server.id);
                 tr.classList.add("selected"), (global.serverAdd = server.ip);
-                if (server.ip == "localhost" || server.ip == "0.0.0.0" || server.ip == "153.75.91.27") {
-                    global.serverAdd = global.serverAdd + ":" + server.port;
+                if (server.port) {
+                let cleanIp = server.ip.split(':')[0];
+                    if (cleanIp === "0.0.0.0" || cleanIp === "localhost") {
+                        cleanIp = "153.75.91.27"; // Your exact VPS Public IP
+                    }
+                    global.serverAdd = cleanIp + ":" + server.port;
                 }
             };
             serversDocs.appendChild(tr);
