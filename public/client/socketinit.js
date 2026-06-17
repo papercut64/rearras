@@ -1277,8 +1277,8 @@ const socketInit = () => {
         targetServer = targetServer.replace("0.0.0.0", "153.75.91.27").replace("localhost", "153.75.91.27");
     }
 
-    // Launch the socket using the cleaned IP target
-    let socket = new WebSocket(protocols[location.protocol] + "//" + targetServer);
+    // Launch the socket using the cleaned IP target (removed the extra slashes)
+    let socket = new WebSocket(protocols[location.protocol] + targetServer);
     
     // Set up our socket
     socket.binaryType = 'arraybuffer';
