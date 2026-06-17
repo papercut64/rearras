@@ -275,7 +275,7 @@ Class.missile = {
             POSITION: [14, 6, 1, 0, -2, 130, 0],
             PROPERTIES: {
                 AUTOFIRE: true,
-                SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, {speed: 1.3, maxSpeed: 1.3}]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, {speed: 0.4, maxSpeed: 1.3}]),
                 TYPE: [ "bullet", { PERSISTS_AFTER_DEATH: true } ],
                 STAT_CALCULATOR: "thruster",
                 WAIT_TO_CYCLE: true,
@@ -285,7 +285,7 @@ Class.missile = {
             POSITION: [14, 6, 1, 0, 2, 230, 0],
             PROPERTIES: {
                 AUTOFIRE: true,
-                SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, {speed: 1.3, maxSpeed: 1.3}]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, {speed: 0.4, maxSpeed: 1.3}]),
                 TYPE: [ "bullet", { PERSISTS_AFTER_DEATH: true } ],
                 STAT_CALCULATOR: "thruster",
                 WAIT_TO_CYCLE: true,
@@ -340,7 +340,7 @@ Class.minimissile = {
             POSITION: [14, 6, 1, 0, 0, 180, 0],
             PROPERTIES: {
                 AUTOFIRE: true,
-                SHOOT_SETTINGS: combineStats([g.basic, { recoil: 0.5 }, g.lowPower]),
+                SHOOT_SETTINGS: combineStats([g.basic, { recoil: 0.5, speed: 0.2 }, g.lowPower]),
                 TYPE: ["bullet", { PERSISTS_AFTER_DEATH: true }],
                 STAT_CALCULATOR: "thruster",
             },
@@ -349,12 +349,12 @@ Class.minimissile = {
 }
 Class.spinmissile = {
     PARENT: "missile",
-    FACING_TYPE: ["spin", {speed: 0.2}],
+    FACING_TYPE: ["spin", {speed: 0.1}],
     GUNS: weaponArray({
         POSITION: [14, 8, 1, 0, 0, 0, 0.5],
         PROPERTIES: {
             AUTOFIRE: !0,
-            SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, {reload: 0.6, size: 1.1, shudder: 0.3}]),
+            SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, {reload: 0.6, size: 1.1, shudder: 0.3, speed: 0.4}]),
             TYPE: ["bullet", { PERSISTS_AFTER_DEATH: true }],
             STAT_CALCULATOR: "thruster",
             WAIT_TO_CYCLE: true,

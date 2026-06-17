@@ -29,7 +29,8 @@ module.exports = {
         shudder: 0.1,
         size: 0.6,
         speed: 1.5,
-        spray: 0.1
+        spray: 0.1,
+        health: 0.5
     },
     swarm: {
         reload: 23,
@@ -311,7 +312,7 @@ module.exports = {
         damage: 0.75,
         speed: 1.2,
         maxSpeed: 0.8,
-        spray: 2.5
+        spray: 1.5
     },
     blaster: {
         recoil: 1.2,
@@ -536,7 +537,8 @@ module.exports = {
     // Minions
     spawner: {
         reload: 1.5,
-        maxSpeed: 1.25
+        maxSpeed: 1.25,
+        health: 0.5
     },
 
     // Heavy cannons
@@ -617,10 +619,11 @@ module.exports = {
         recoil: 1.5,
         shudder: 0.1,
         size: 0.72,
-        health: 1.05,
-        damage: 0.925,
-        speed: 0.9,
-        maxSpeed: 1.2,
+        health: 1.0,
+        damage: 0.90,
+        pen: 1.2,
+        speed: 0.7,
+        maxSpeed: 1.0,
         range: 1.1,
         resist: 1.5
     },
@@ -628,11 +631,11 @@ module.exports = {
         recoil: 0.8,
         shudder: 0.8,
         size: 0.9,
-        health: 1.35,
-        damage: 0.8,
-        pen: 2,
-        speed: 0.85,
-        maxSpeed: 0.85,
+        health: 1.5,
+        damage: 0.90,
+        pen: 1.2,
+        speed: 0.8,
+        maxSpeed: 0.8,
         resist: 1.1
     },
     snake: {
@@ -669,10 +672,10 @@ module.exports = {
         reload: 1.4,
         shudder: 0.9,
         size: 2,
-        health: 1.5,
-        damage: 1.4,
-        pen: 1.4,
-        speed: 0.3,
+        health: 1.8,
+        damage: 0.90,
+        pen: 1.2,
+        speed: 0.8,
         range: 1.2,
         resist: 1.4
     },
@@ -682,17 +685,17 @@ module.exports = {
         shudder: 2,
         damage: 0.9,
         pen: 0.7,
-        speed: 0.4,
+        speed: 0.1,
         range: 0.5
     },
     rocketeerMissileTrail: {
         reload: 0.5,
-        recoil: 7,
+        recoil: 2,
         shudder: 1.5,
         size: 0.8,
         health: 0.8,
         damage: 0.7,
-        speed: 0.9,
+        speed: 0.2,
         maxSpeed: 0.8,
         spray: 5
     },

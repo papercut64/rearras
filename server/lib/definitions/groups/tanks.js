@@ -4796,7 +4796,7 @@ Class.skimmer = {
                 WIDTH: 15
             },
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer, {speed: 0.8}]),
                 TYPE: 'missile',
                 STAT_CALCULATOR: 'sustained',
             },
@@ -5524,7 +5524,7 @@ Class.twister = {
                 ASPECT: -1.4
             },
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer, {speed: 0.6, reload: 4/3, shudder: 0.1}]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer, {speed: 0.8, reload: 4/3, shudder: 0.1}]),
                 TYPE: 'spinmissile',
                 STAT_CALCULATOR: 'sustained+lowspeed'
             }

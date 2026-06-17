@@ -287,7 +287,7 @@ Class.hyperSkimmerTurret = makeTurret({
                 WIDTH: 15
             },
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer, { speed: 0.4, maxSpeed: 0.6 }]),
                 TYPE: "hypermissile",
                 STAT_CALCULATOR: "sustained",
             },
@@ -322,7 +322,7 @@ Class.autoSmasherLauncherTurret = makeTurret({
         },
     ],
 }, {canRepel: true, limitFov: true, fov: 10, independent: true, extraStats: []})
-Class.twisterTurret = makeTurret('twister', {canRepel: true, limitFov: true, color: 'mirror', extraStats: [{speed: 1.3, maxSpeed: 1.3}]})
+Class.twisterTurret = makeTurret('twister', {canRepel: true, limitFov: true, color: 'mirror', extraStats: [{speed: 0.2, maxSpeed: 0.3}]})
 Class.hyperTwisterTurret = makeTurret({
     GUNS: [
         {
@@ -340,7 +340,7 @@ Class.hyperTwisterTurret = makeTurret({
                 ASPECT: -1.4
             },
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer, {speed: 0.6, reload: 4/3, shudder: 0.1}]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer, {speed: 0.5, reload: 4/3, shudder: 0.1}]),
                 TYPE: "hyperspinmissile",
                 STAT_CALCULATOR: "sustained+lowspeed"
             }

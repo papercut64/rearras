@@ -320,7 +320,7 @@ class Gun extends EventEmitter {
                 spread = ran.gauss(0, this.settings.spray * this.settings.shudder);
             } while (Math.abs(spread) >= this.settings.spray / 2);
         }
-        spread = (spread * 0.5) * Math.PI / 180;
+        spread = (spread * 0.7) * Math.PI / 180;
         // Find speed
         let vecLength = (this.negRecoil ? -1 : 1) * this.settings.speed * global.gameManager.runSpeed * sk.spd * (1 + (shudder*0.3)),
           vecAngle = this.angle + this.body.facing + spread,

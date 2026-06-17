@@ -328,8 +328,8 @@ function physics(g) {
     if (g.motion || g.position) {
         // 1. Calculate time delta using hardcoded, strictly isolated globals
         // This calculates dt without creating any new variable references
-        g.motion += ((-0.07 * g.position) + (-0.1 * g.motion)) * ((global.metrics.rendergap || 33.33) / 33.33);
-        g.position += g.motion * ((global.metrics.rendergap || 33.33) / 33.33)*0.4; 
+        g.motion += ((-0.04 * g.position) + (-0.1 * g.motion)) * ((global.metrics.rendergap || 33.33) / 33.33);
+        g.position += g.motion * ((global.metrics.rendergap || 33.33) / 33.33)*0.2; 
 
         // 2. Clamp at exactly PI (End of first half of the sine wave)
         // If the barrel is moving outward (motion < 0) and crosses the baseline (position <= 0)
@@ -1272,15 +1272,28 @@ const socketInit = () => {
     window.resizeEvent();
     
     // FIX: Force any local routing strings to use your public VPS IP instead
+    // Grab the initial target server
     let targetServer = global.serverAdd;
-    if (targetServer.includes("0.0.0.0") || targetServer.includes("localhost")) {
-        targetServer = targetServer.replace("0.0.0.0", "153.75.91.27").replace("localhost", "153.75.91.27");
+
+    // Detect if the browser is running the game locally
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+    if (!isLocal) {
+        // WE ARE LIVE: Force internal bindings to use the public VPS IP
+        if (targetServer.includes("0.0.0.0") || targetServer.includes("localhost")) {
+            targetServer = targetServer.replace("0.0.0.0", "153.75.91.27").replace("localhost", "153.75.91.27");
+        }
+    } else {
+        // WE ARE LOCAL: Ensure internal 0.0.0.0 bindings route back to your local PC
+        if (targetServer.includes("0.0.0.0")) {
+            targetServer = targetServer.replace("0.0.0.0", "localhost");
+        }
     }
 
-    // Launch the socket using the cleaned IP target (removed the extra slashes)
+    // Launch the socket using the dynamically cleaned IP target
     let socket = new WebSocket(protocols[location.protocol] + targetServer);
     
-    // Set up our socket
+    // Set up our socketgafewawgf
     socket.binaryType = 'arraybuffer';
     socket.open = false;
     // Handle commands
