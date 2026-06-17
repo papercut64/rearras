@@ -1961,7 +1961,7 @@ Class.cerberus_dreadsV2 = {
 					DELAY: 0.5
 				},
 				PROPERTIES: {
-					SHOOT_SETTINGS: combineStats([g.trap, g.twin, g.pounder, {shudder: 0.6, health: 0.55, reload: 1.2, range: 0.67}]),
+					SHOOT_SETTINGS: combineStats([g.trap, g.twin, g.pounder, {shudder: 0.6, health: 0.55, reload: 1.2, range: 2000}]),
 					TYPE: "trap",
 					STAT_CALCULATOR: "trap"
 				}
@@ -1981,7 +1981,7 @@ Class.cerberus_dreadsV2 = {
 				X: 14
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.trap, g.setTrap, g.twin, g.pounder, {reload: 1.15, health: 0.85, speed: 0.75, maxSpeed: 0.75, range: 0.5}]),
+				SHOOT_SETTINGS: combineStats([g.trap, g.setTrap, g.twin, g.pounder, {reload: 1.15, health: 0.85, speed: 0.75, maxSpeed: 0.75, range: 2000}]),
 				TYPE: "unsetTrap",
 				STAT_CALCULATOR: "block"
 			}

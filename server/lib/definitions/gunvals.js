@@ -56,7 +56,8 @@ module.exports = {
         damage: 0.75,
         speed: 3.25,
         resist: 3,
-        spray: 0
+        spray: 0,
+        range: 1
     },
 
     // Spammers
@@ -716,7 +717,8 @@ module.exports = {
     construct: {
         reload: 1.3,
         size: 0.9,
-        maxSpeed: 1.1
+        maxSpeed: 1.1,
+        range: 1
     },
     boomerang: {
         reload: 0.8,

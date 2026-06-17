@@ -32,7 +32,7 @@ module.exports = {
 
             properties: { // This overrides settings in the config.js file, assuming the selected gamemode doesn't also override it.
                 teams: 4,
-                bot_cap: 40
+                bot_cap: 20
             }
         },
         {
