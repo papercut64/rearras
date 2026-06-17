@@ -287,7 +287,7 @@ Class.hyperSkimmerTurret = makeTurret({
                 WIDTH: 15
             },
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer, { speed: 0.4, maxSpeed: 0.6 }]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer, { speed: 0.4, maxSpeed: 0.5, health: 2 }]),
                 TYPE: "hypermissile",
                 STAT_CALCULATOR: "sustained",
             },

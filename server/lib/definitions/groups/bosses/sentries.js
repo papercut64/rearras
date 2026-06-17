@@ -171,7 +171,7 @@ Class.sentinelLauncher = {
         {
             POSITION: [3, 12.45, -1.35, 17.2, 0, 0, 0],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.launcher, {speed: 0.3, health: 5, damage: 0.9, pen: 1.5, maxSpeed: 0.4}]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.launcher, {speed: 0.15, health: 2, damage: 0.9, pen: 1.5, maxSpeed: 0.25}]),
                 TYPE: "sentinelMissile",
                 NO_LIMITATIONS: true,
             },

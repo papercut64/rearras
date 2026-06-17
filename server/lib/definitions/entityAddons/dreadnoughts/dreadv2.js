@@ -1,12 +1,13 @@
 const {combineStats, dereference, makeAura, makeAuto, makeHat, weaponArray, weaponMirror} = require('../../facilitators.js')
 const {base, smshskl} = require('../../constants.js')
 const g = require('../../gunvals.js')
+const speedMulti = 1.3
 
 // ARMS RACE V2 DREADNOUGHTS BY FROSTBYTE
 
 const eggnoughtBody = {
-	SPEED: base.SPEED * 0.75,
-	HEALTH: base.HEALTH * 1.75,
+	SPEED: base.SPEED * 0.75*speedMulti,
+	HEALTH: base.HEALTH * 1.75*3,
 	SHIELD: base.SHIELD * 2.5,
 	REGEN: base.REGEN * 1.25,
 	FOV: base.FOV,
@@ -15,8 +16,8 @@ const eggnoughtBody = {
 	ACCELERATION: base.ACCEL * 0.8,
 };
 const squarenoughtBody = {
-	SPEED: base.SPEED * 0.7,
-	HEALTH: base.HEALTH * 2.5,
+	SPEED: base.SPEED * 0.7*speedMulti,
+	HEALTH: base.HEALTH * 7.5,
 	SHIELD: base.SHIELD * 2.7,
 	REGEN: base.REGEN * 1.4,
 	FOV: base.FOV * 0.95,
@@ -25,8 +26,8 @@ const squarenoughtBody = {
 	ACCELERATION: base.ACCEL * 0.65,
 };
 const trinoughtBody = {
-	SPEED: base.SPEED * 0.65,
-	HEALTH: base.HEALTH * 3.5,
+	SPEED: base.SPEED * 0.65*speedMulti,
+	HEALTH: base.HEALTH * 10.5,
 	SHIELD: base.SHIELD * 2.9,
 	REGEN: base.REGEN * 1.5,
 	FOV: base.FOV * 0.95,
@@ -35,8 +36,8 @@ const trinoughtBody = {
 	ACCELERATION: base.ACCEL * 0.55,
 };
 const pentanoughtBody = {
-	SPEED: base.SPEED * 0.6,
-	HEALTH: base.HEALTH * 4.25,
+	SPEED: base.SPEED * 0.6*speedMulti,
+	HEALTH: base.HEALTH * 12.75,
 	SHIELD: base.SHIELD * 3.1,
 	REGEN: base.REGEN * 1.55,
 	FOV: base.FOV * 0.95,
@@ -45,8 +46,8 @@ const pentanoughtBody = {
 	ACCELERATION: base.ACCEL * 0.45,
 };
 const hexnoughtBody = {
-	SPEED: base.SPEED * 0.55,
-	HEALTH: base.HEALTH * 5,
+	SPEED: base.SPEED * 0.55*speedMulti,
+	HEALTH: base.HEALTH * 15,
 	SHIELD: base.SHIELD * 3.3,
 	REGEN: base.REGEN * 1.6,
 	FOV: base.FOV * 0.95,
@@ -153,7 +154,7 @@ Class.byteTurret_dreadsV2 = {
 				WIDTH: 10
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.pelleter, g.power, g.turret, {size: 0.9, health: 1.3, speed: 0.85, recoil: 0.8, range: 0.45}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.pelleter, g.power, g.turret, {size: 0.9, health: 1.5, speed: 0.85, recoil: 0, range: 0.6, reload: 0.35}]),
 				TYPE: "bullet"
 			}
 		}
@@ -183,7 +184,7 @@ Class.gigabyteTurret_dreadsV2 = {
 				WIDTH: 16
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.pelleter, g.power, g.turret, g.assassin, g.pounder, g.destroyer, {size: 0.75, health: 1.24, speed: 0.9, recoil: 1.4, range: 0.9}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.pelleter, g.power, g.turret, g.assassin, g.pounder, g.destroyer, {size: 0.75, health: 1.6, speed: 2, recoil: 0, range: 0.6, reload: 0.25}]),
 				TYPE: "bullet"
 			}
 		}
@@ -199,7 +200,7 @@ Class.kilobyteTurret_dreadsV2 = {
 				WIDTH: 10
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.pelleter, g.power, g.turret, g.assassin, {size: 0.9, health: 1.39, speed: 0.63, recoil: 1.25, range: 0.5}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.pelleter, g.power, g.turret, g.assassin, {size: 0.9, health: 1.39, speed: 0.75, recoil: 0, range: 0.6, reload: 0.4}]),
 				TYPE: "bullet"
 			}
 		}
@@ -215,7 +216,7 @@ Class.megabyteTurret_dreadsV2 = {
 				WIDTH: 13
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.pelleter, g.power, g.turret, g.assassin, g.pounder, {size: 0.85, health: 1.31, speed: 0.62, recoil: 1.4, range: 0.52}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.pelleter, g.power, g.turret, g.assassin, g.pounder, {size: 0.85, health: 1.7, speed: 1.3, recoil: 0, range: 0.5, reload:0.5}]),
 				TYPE: "bullet"
 			}
 		}
@@ -255,7 +256,7 @@ Class.spamAutoTurret = {
 				WIDTH: 10
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.flankGuard, g.flankGuard, g.flankGuard, g.autoTurret, {recoil: 0.125}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.flankGuard, g.flankGuard, g.flankGuard, g.autoTurret, {recoil: 0}]),
 				TYPE: "bullet"
 			}
 		}
@@ -283,7 +284,7 @@ Class.assailantMinion_dreadsV2 = {
 	GUNS: weaponArray({
 		POSITION: [15, 7.5, 1, 0, 0, 0, 0],
 		PROPERTIES: {
-			SHOOT_SETTINGS: combineStats([g.basic, g.assassin, g.minionGun, {reload: 1.8, health: 1.1}]),
+			SHOOT_SETTINGS: combineStats([g.basic, g.assassin, g.minionGun, {reload: 1.8, health: 1.1,}]),
 			WAIT_TO_CYCLE: true,
 			TYPE: "bullet",
 		},
@@ -302,14 +303,16 @@ Class.gladiatorGenericMinion_dreadsV2 = {
 	PARENT: "minion",
 	SHAPE: 3.5,
 	COLOR: "crasher",
+	MAX_CHILDREN: 2,
 	GUNS: [],
 }
 Class.gladiatorTritankMinion_dreadsV2 = {
 	PARENT: "gladiatorGenericMinion_dreadsV2",
+	MAX_CHILDREN: 2,
 	GUNS: weaponArray({
 		POSITION: [15, 8.5, 1, 0, 0, 0, 0],
 		PROPERTIES: {
-			SHOOT_SETTINGS: combineStats([g.basic, g.assassin, g.minionGun, {speed: 1.06, maxSpeed: 1.06, reload: 1.8, health: 1.3}]),
+			SHOOT_SETTINGS: combineStats([g.basic, g.assassin, g.minionGun, {speed: 1.06, maxSpeed: 1.06, reload: 1.8, health: 1.3, size: 1.5}]),
 			WAIT_TO_CYCLE: true,
 			TYPE: ["bullet", {COLOR: 5}],
 		},
@@ -317,6 +320,7 @@ Class.gladiatorTritankMinion_dreadsV2 = {
 }
 Class.gladiatorTritrapMinion_dreadsV2 = {
 	PARENT: "gladiatorGenericMinion_dreadsV2",
+	MAX_CHILDREN: 2,
 	GUNS: weaponArray([
 		{
 			POSITION: [13, 7, 1, 0, 0, 0, 0],
@@ -332,6 +336,7 @@ Class.gladiatorTritrapMinion_dreadsV2 = {
 }
 Class.gladiatorTriswarmMinion_dreadsV2 = {
 	PARENT: "gladiatorGenericMinion_dreadsV2",
+	MAX_CHILDREN: 2,
 	GUNS: weaponArray({
 		POSITION: [7, 8.5, -1.5, 7, 0, 0, 0],
 		PROPERTIES: {
@@ -387,7 +392,7 @@ Class.supermissile = {
 			POSITION: [14, 6, 1, 0, -2, 130, 0],
 			PROPERTIES: {
 				AUTOFIRE: true,
-				SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, {reload: 1.15, speed: 1.3, maxSpeed: 1.3, recoil: 0.75}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, {reload: 1.15, speed: 1.3, maxSpeed: 1.3, recoil: 0}]),
 				TYPE: ["bullet", {PERSISTS_AFTER_DEATH: true}],
 				STAT_CALCULATOR: "thruster",
 			},
@@ -395,7 +400,7 @@ Class.supermissile = {
 			POSITION: [14, 6, 1, 0, 2, 230, 0],
 			PROPERTIES: {
 				AUTOFIRE: true,
-				SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, {reload: 1.15, speed: 1.3, maxSpeed: 1.3, recoil: 0.75}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, {reload: 1.15, speed: 1.3, maxSpeed: 1.3, recoil: 0}]),
 				TYPE: ["bullet", {PERSISTS_AFTER_DEATH: true}],
 				STAT_CALCULATOR: "thruster",
 			},
@@ -403,7 +408,7 @@ Class.supermissile = {
 			POSITION: [14, 6, 1, 0, 0, 0, 0.2],
 			PROPERTIES: {
 				AUTOFIRE: true,
-				SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, g.skimmer, {reload: 1.15, speed: 1.15, maxSpeed: 1.15, recoil: 0.75}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.lowPower, g.skimmer, {reload: 1.15, speed: 1.15, maxSpeed: 1.15, recoil: 0}]),
 				TYPE: ["bullet", {PERSISTS_AFTER_DEATH: true}],
 			},
 		},
@@ -475,10 +480,10 @@ Class.pentanoughtSmallHealAura = makeAura(-0.8, 1.6, 0.15)
 Class.gladiatorHealAuraMinionAura_dreadsV2 = makeAura(-1/3, 1.2)
 
 // gStat turret modifiers
-g.triSecondaryAuto = {reload: 1.1, health: 0.83};
-g.pentaSecondaryAuto = {reload: 1.1, health: 0.88}
+g.triSecondaryAuto = {size: 0.9, health: 1.5, speed: 0.85, recoil: 0, range: 0.6, reload: 0.35};
+g.pentaSecondaryAuto = {size: 0.9, health: 1.5, speed: 0.85, recoil: 0, range: 0.6, reload: 0.35};
 g.triKilobyte = {reload: 1.05, health: 0.9, speed: 0.95, maxSpeed: 0.95};
-g.pentaMegabyte = {reload: 1.05, health: 0.95, speed: 0.9, maxSpeed: 0.9};
+g.pentaMegabyte = {health: 1.7, speed: 1.3, recoil: 0, range: 0.5, reload:0.5};
 
 // T0
 Class.dreadnought_dreadsV2 = {
@@ -878,7 +883,7 @@ Class.executor_dreadsV2 = {
 			},
 			PROPERTIES: {
 				SHOOT_SETTINGS: combineStats([g.basic, g.pounder, g.artillery, g.artillery, g.skimmer, {reload: 1.1, health: 1.35, speed: 0.7, maxSpeed: 0.65, range: 1/3}]),
-				TYPE: ["missile", {GUN_STAT_SCALE: {recoil: 0.6}}],
+				TYPE: ["missile", {GUN_STAT_SCALE: {recoil: 0}}],
 				STAT_CALCULATOR: "sustained"
 			}
 		},
@@ -950,7 +955,7 @@ Class.mediator_dreadsV2 = {
 			Y: 4.25
 		},
 		PROPERTIES: {
-			SHOOT_SETTINGS: combineStats([g.basic, g.twin, { health: 1.09, range: 0.9 }]),
+			SHOOT_SETTINGS: combineStats([g.basic, g.twin, { health: 0.8, range: 0.7 }]),
 			TYPE: "bullet"
 		}
 	}, {delayIncrement: 0.5}), 4)
@@ -990,7 +995,7 @@ Class.negotiator_dreadsV2 = {
 			ASPECT: 1.8
 		},
 		PROPERTIES: {
-			SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, {size: 0.85, speed: 0.85, maxSpeed: 0.75, health: 1.23, range: 0.75}]),
+			SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, {size: 0.85, speed: 0.85, maxSpeed: 0.75, health: 1, range: 0.4, size: 1.2}]),
 			TYPE: "bullet"
 		}
 	}, 4)
@@ -1058,7 +1063,7 @@ Class.automation_dreadsV2 = {
 	PARENT: "genericSquarenought",
 	LABEL: "Automation",
 	TURRETS: weaponArray({
-		TYPE: ["spamAutoTurret", {GUN_STAT_SCALE: {reload: 0.9, health: 1.2}}],
+		TYPE: ["spamAutoTurret", {GUN_STAT_SCALE: {size: 1.2, health: 1.5, speed: 0.85, recoil: 0, range: 0.6, reload: 0.35}}],
 		POSITION: {
 			SIZE: 3.5,
 			X: 9,
@@ -1246,7 +1251,7 @@ Class.appeaser_dreadsV2 = {
 				ASPECT: 1.8
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.spam, {size: 0.7, health: 1.03, range: 0.75}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.spam, {size: 1, health: 1.03, range: 0.4, spray: 3}]),
 				TYPE: "bullet"
 			}
 		},
@@ -1257,7 +1262,7 @@ Class.appeaser_dreadsV2 = {
 				ASPECT: 1.8
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.spam, {size: 0.6, health: 1.03, range: 0.75, reload: 1.05}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.spam, {size: 0.85, health: 1.03, range: 0.4, reload: 1.05, spray: 3}]),
 				TYPE: "bullet"
 			}
 		}
@@ -1506,7 +1511,7 @@ Class.mitigator_dreadsV2 = {
 			Y: 5
 		},
 		PROPERTIES: {
-			SHOOT_SETTINGS: combineStats([g.basic, g.twin, {health: 1.15, range: 0.9}]),
+			SHOOT_SETTINGS: combineStats([g.basic, g.twin, {health: 0.86, range: 0.7}]),
 			TYPE: "bullet"
 		}
 	}, {delayIncrement: 0.5}), 3)
@@ -1904,7 +1909,7 @@ Class.arbitrator_dreadsV2 = {
 				ASPECT: 1.8
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 0.7,  health: 1.05, range: 0.8, reload: 1}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 0.9,  health: 1.09, range: 0.5, reload: 1, spray: 3}]),
 				TYPE: "bullet",
 			}
 		},
@@ -1915,7 +1920,7 @@ Class.arbitrator_dreadsV2 = {
 				ASPECT: 1.8
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 0.65, health: 1.05, range: 0.8, reload: 1.05}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 0.9, health: 1.09, range: 0.5, reload: 1.05, spray: 3}]),
 				TYPE: "bullet",
 			}
 		},
@@ -1926,7 +1931,7 @@ Class.arbitrator_dreadsV2 = {
 				ASPECT: 1.8
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 0.7,  health: 1.05, range: 0.8, reload: 1.1}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 1,  health: 1.09, range: 0.5, reload: 1.1, spray: 3}]),
 				TYPE: "bullet",
 			}
 		}
@@ -1995,7 +2000,7 @@ Class.diplomat_dreadsV2 = {
 				DELAY: 0.5
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.twin, g.triplet, {health: 1.15}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.twin, g.triplet, {health: 1.1, range: 0.7}]),
 				TYPE: "bullet"
 			}
 		}),
@@ -2005,7 +2010,7 @@ Class.diplomat_dreadsV2 = {
 				WIDTH: 7
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.twin, g.triplet, {health: 1.15}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.twin, g.triplet, {health: 1.3, range: 0.7}]),
 				TYPE: "bullet"
 			}
 		}
@@ -2032,7 +2037,7 @@ Class.gladiator_dreadsV2 = {
 				X: 15
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.minion, {size: 0.9, reload: 2.1, health: 1.16, damage: 0.62, pen: 0.9, speed: 0.8, maxSpeed: 0.8, density: 1.6}]),
+				SHOOT_SETTINGS: combineStats([g.minion, {size: 1, reload: 2.1, health: 1.16, damage: 0.62, pen: 0.9, speed: 0.8, maxSpeed: 0.8, density: 0.1, acceleration: 0.3}]),
 				TYPE: "minion",
 				STAT_CALCULATOR: "drone",
 				AUTOFIRE: true,

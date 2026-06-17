@@ -646,8 +646,9 @@ Class.genericMinion = {
     PARENT: "genericTank",
     LABEL: "Minion",
     TYPE: "minion",
-    HITS_OWN_TYPE: "hardWithBuffer",
+    HITS_OWN_TYPE: "push",
     FACING_TYPE: "smoothToTarget",
+    DIE_AT_RANGE: false,
     BODY: {
         FOV: 0.5,
         SPEED: 1.8,
@@ -658,6 +659,8 @@ Class.genericMinion = {
         RESIST: 1,
         PENETRATION: 1,
         DENSITY: 0.4,
+        RANGE: 99999999,
+        PUSHABILITY: 2.5,
     },
     AI: {
         BLIND: true,
@@ -702,7 +705,7 @@ Class.tinyMinion = {
         HEALTH: 0.35 * 0.5,
         DAMAGE: 2.25,
         RESIST: 1.6,
-        RANGE: 300,
+        RANGE: 99999999,
         DENSITY: 12,
         PUSHABILITY: 0.5,
         FOV: 1.5,

@@ -252,7 +252,7 @@ module.exports = {
         health: 0.7,
         damage: 0.7,
         maxSpeed: 0.8,
-        spray: 2.5
+        spray: 3.5
     },
     minigun: {
         reload: 1.25,

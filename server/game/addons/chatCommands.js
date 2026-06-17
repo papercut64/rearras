@@ -165,6 +165,25 @@ let commands = [
         },
     },
     {
+        command: ["dread"],
+        description: "Become a Level 240 Dreadnought V2.",
+        level: 3, // Requires Dev Level 3 permissions
+        run: ({ socket }) => {
+            // 1. Reset active upgrades array and set body definition stats
+            socket.player.body.upgrades = [];
+            socket.player.body.define({ RESET_UPGRADES: true, BATCH_UPGRADES: false, LEVEL: 240 });
+
+            // 2. Make the tank dreadnought_dreadsV2
+            socket.player.body.define("dreadnought_dreadsV2");
+
+            // 3. Clear any extra points out and reset skill calculations cleanly
+            socket.player.body.skill.update();
+            socket.player.body.refreshBodyAttributes();
+
+            socket.talk("m", 5_000, `Success`);
+        }
+    },
+    {
         command: ["level"],
         description: "Change your level.",
         level: 2,
