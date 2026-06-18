@@ -84,7 +84,7 @@ module.exports = {
             private: false, 
 
             properties: { 
-                teams: 4,
+                teams: 1,
                 bot_cap: 0,
                 
                 // --- NEW PORTAL LOGIC ---

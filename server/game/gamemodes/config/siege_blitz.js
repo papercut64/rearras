@@ -13,6 +13,5 @@ module.exports = {
     blitz: true,
     bot_xp_gain: 500,
     maze_type: 13,
-    arms_race: true,
-    growth: true
+    enable_bosses: false,
 };

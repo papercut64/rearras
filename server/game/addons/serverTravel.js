@@ -1,37 +1,40 @@
 async function getServer(server) {
     try {
-        // Automatically check the environment variable OR the string itself
+        // --- ADAPTIVE NETWORK TOGGLE ---
+        // Automatically checks if your environment is set to local OR if your config IP says 'localhost'
         let isLocal = process.env.NODE_ENV === 'local' || server.ip.includes("localhost") || server.ip.includes("127.0.0.1");
 
         if (isLocal) {
-            // LOCAL MODE: Safe in-memory lookup (bypasses port 443 and fetch errors)
+            // LOCAL MODE: Safe memory lookup
             let portMatch = server.ip.match(/:(\d+)/);
             let currentWorkerPort = portMatch ? parseInt(portMatch[1]) : 4001;
             
             let matchedConfig = Config.servers.find(s => s.port === currentWorkerPort);
             if (!matchedConfig) return false;
 
-            return {
-                name: matchedConfig.gamemode[0].toUpperCase(),
-                players: 0, 
-                ip: server.ip,
-                destination: `http://${server.ip}` // Forces standard local http:// routing
+            // --- NEW: CLEAN CLEAN NAME TRANSLATION ---
+            let rawMode = matchedConfig.gamemode[0]; // e.g. 'siege_blitz'
+            let cleanNames = {
+                'tdm': 'TDM',
+                'siege_blitz': 'Siege Blitz',
+                'nexus': 'Nexus',
+                'sandbox': 'Sandbox'
             };
-        } else {
-            // PRODUCTION MODE: Secure network fetch for live rearras.dev players
-            let data = await fetch(`https://${server.ip}/portalPermission`).then(r => r.json()).catch(() => false);
-            if (!data) return false;
-            data = data[0];
+            
+            // Fallback to capitalizing the raw string if you create a new mode later
+            let displayName = cleanNames[rawMode] || rawMode.toUpperCase();
+            // ----------------------------------------
 
             return {
-                name: (data.gameMode || "Game Room").trim(),
-                players: data.players || 0,
+                name: displayName, // Now passes "Siege Blitz" instead of "SIEGE_BLITZ"
+                players: 0, 
                 ip: server.ip,
-                destination: `https://${data.ip}` // Forces secure wss:// routing over port 443
+                destination: `http://${server.ip}`
             };
         }
     } catch (e) {
-        console.log(e);
+        console.error("[ServerTravel] getServer error:", e);
+        return false;
     }
 }
 
@@ -52,13 +55,17 @@ let Portal = class {
         this.body.color.base = color;
         this.body.godmode = true;
         this.body.team = -101;
-        this.body.isPortal = true;
         this.body.name = this.name;
+        
+        // Safety check to ensure settings object exists before assigning to it
+        if (!this.body.settings) this.body.settings = {};
+        
         this.body.settings.scoreLabel = `${this.players} player${this.players === 1 ? "" : "s"}`;
         this.body.settings.destination = this.destination;
         this.body.allowedOnMinimap = true;
         this.body.alwaysShowOnMinimap = true;
         this.body.minimapColor = 19;
+        
         let updateInterval = setInterval(async () => {
             let data = await getServer({ip: this.ip});
             if (data) {
@@ -66,6 +73,7 @@ let Portal = class {
                 this.body.name = data.name;
             }
         }, 5000);
+        
         setTimeout(() => {
             clearInterval(updateInterval);
             this.body.destroy();
@@ -73,6 +81,7 @@ let Portal = class {
         }, duration);
     }
 }
+
 class serverTravelHandler {
     static pendingPortalSpawns = new Set();
 
@@ -81,86 +90,92 @@ class serverTravelHandler {
         this.spawnChance = spawnChance;
         this.color = color;
     }
+    
     async spawnRandom() {
-        let spawnChance = Math.random() < 1 / this.spawnChance;
-        if (spawnChance) {
+        try {
+            let spawnChance = Math.random() < 1 / this.spawnChance;
+            if (!spawnChance) return;
+
             let server = await getServer(this.self);
-            if (server) {
-                // Duplicate prevention checks
-                if (serverTravelHandler.pendingPortalSpawns.has(server.destination)) return; 
-                let entitiesList = global.entities ? Object.values(global.entities) : [];
-                let duplicateExists = entitiesList.some(e => e && e.isPortal && e.settings && e.settings.destination === server.destination);
-                if (duplicateExists) return; 
+            if (!server) return;
 
-                serverTravelHandler.pendingPortalSpawns.add(server.destination);
+            // Duplicate checks
+            if (serverTravelHandler.pendingPortalSpawns.has(server.destination)) return; 
+            let entitiesList = global.entities ? Object.values(global.entities) : [];
+            let duplicateExists = entitiesList.some(e => e && e.isPortal && e.settings && e.settings.destination === server.destination);
+            if (duplicateExists) return; 
 
-                // --- NEW: DYNAMIC ROOM TILE LOOKUP ---
-                let spawnLocation;
-                let portalProps = this.self.portal_properties || {};
-                let roomDataFile = portalProps.roomData; // e.g., 'room_nexus'
-                let targetLocation = portalProps.location; // e.g., 'prt1'
+            // Mark as pending
+            serverTravelHandler.pendingPortalSpawns.add(server.destination);
 
-                if (roomDataFile && targetLocation) {
-                    try {
-                        // Dynamically load the specific room grid map file 
-                        let grid = require(`../roomSetup/rooms/${roomDataFile}.js`);
-                        let validSpots = [];
+            let spawnLocation;
+            let portalProps = this.self.portal_properties || {};
+            let roomDataFile = portalProps.roomData; 
+            let targetLocation = portalProps.location;
 
-                        // Scan the entire 2D array for tiles that match your 'prt' tag
-                        for (let row = 0; row < grid.length; row++) {
-                            for (let col = 0; col < grid[row].length; col++) {
-                                let tile = grid[row][col];
-                                if (tile === targetLocation || (tile && tile.id === targetLocation)) {
-                                    validSpots.push({ col, row });
-                                }
+            if (roomDataFile && targetLocation) {
+                try {
+                    let grid = require(`../roomSetup/rooms/${roomDataFile}.js`);
+                    let validSpots = [];
+
+                    for (let row = 0; row < grid.length; row++) {
+                        for (let col = 0; col < grid[row].length; col++) {
+                            let tile = grid[row][col];
+                            if (tile === targetLocation || (tile && tile.id === targetLocation)) {
+                                validSpots.push({ col, row });
                             }
                         }
-
-                        if (validSpots.length > 0) {
-                            // Pick a random grid cell from the valid pool
-                            let spot = validSpots[Math.floor(Math.random() * validSpots.length)];
-                            
-                            // Map the array columns/rows to physical engine coordinates
-                            let tileW = Config.map_tile_width || 420;
-                            let tileH = Config.map_tile_height || 420;
-                            let room = global.gameManager.room;
-                            
-                            // Account for variable Arras zero-point origins
-                            let leftEdge = typeof room.x !== 'undefined' ? room.x : -(grid[0].length * tileW) / 2;
-                            let topEdge = typeof room.y !== 'undefined' ? room.y : -(grid.length * tileH) / 2;
-
-                            // Add minor jitter so portals don't stack mathematically perfectly in the dead center every time
-                            let jitterX = (Math.random() - 0.5) * (tileW * 0.8);
-                            let jitterY = (Math.random() - 0.5) * (tileH * 0.8);
-
-                            spawnLocation = {
-                                x: leftEdge + (spot.col * tileW) + (tileW / 2) + jitterX,
-                                y: topEdge + (spot.row * tileH) + (tileH / 2) + jitterY
-                            };
-                        }
-                    } catch (err) {
-                        console.error(`[Server Travel] Could not load ${roomDataFile}.js to scan for ${targetLocation}.`);
                     }
+
+                    if (validSpots.length > 0) {
+                        let spot = validSpots[Math.floor(Math.random() * validSpots.length)];
+                        let tileW = Config.map_tile_width || 420;
+                        let tileH = Config.map_tile_height || 420;
+                        let room = global.gameManager.room;
+                        
+                        let leftEdge = typeof room.x !== 'undefined' ? room.x : -(grid[0].length * tileW) / 2;
+                        let topEdge = typeof room.y !== 'undefined' ? room.y : -(grid.length * tileH) / 2;
+
+                        let jitterX = (Math.random() - 0.5) * (tileW * 0.8);
+                        let jitterY = (Math.random() - 0.5) * (tileH * 0.8);
+
+                        spawnLocation = {
+                            x: leftEdge + (spot.col * tileW) + (tileW / 2) + jitterX,
+                            y: topEdge + (spot.row * tileH) + (tileH / 2) + jitterY
+                        };
+                    }
+                } catch (err) {
+                    console.error(`[Server Travel] Map scanner failed on ${roomDataFile}.js:`, err);
                 }
+            }
 
-                // Fallback to pure random ONLY if the file scan failed or you didn't configure a region
-                if (!spawnLocation) {
-                    spawnLocation = global.gameManager.room.random();
-                }
-                // -------------------------------------
+            // Fallback
+            if (!spawnLocation) {
+                spawnLocation = global.gameManager.room.random();
+            }
 
-                let portal = new Portal(server.name, server.players, server.destination, server.ip);
-                let portalLifespan = 30000; // Despawns after 30 seconds
-                
-                portal.spawn(spawnLocation, this.color, portalLifespan);
+            let portal = new Portal(server.name, server.players, server.destination, server.ip);
+            let portalLifespan = 30000; 
+            
+            portal.spawn(spawnLocation, this.color, portalLifespan);
 
-                setTimeout(() => {
-                    serverTravelHandler.pendingPortalSpawns.delete(server.destination);
-                }, portalLifespan);
+            // Successfully spawned, queue the cleanup
+            setTimeout(() => {
+                serverTravelHandler.pendingPortalSpawns.delete(server.destination);
+            }, portalLifespan);
+
+        } catch (fatalError) {
+            console.error("[Server Travel] Fatal Spawn Error:", fatalError);
+            // FAILSAFE: Force clear the tracker if a crash occurred so the room isn't permanently locked
+            if (this.self && this.self.ip) {
+                serverTravelHandler.pendingPortalSpawns.forEach(dest => {
+                    if (dest.includes(this.self.ip)) serverTravelHandler.pendingPortalSpawns.delete(dest);
+                });
             }
         }
     }
 }
+
 if (loadedAddons.includes("chatCommands")) {
     addChatCommand({
         command: ["join", "j"],
