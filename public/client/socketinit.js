@@ -1281,7 +1281,7 @@ const socketInit = () => {
     if (!isLocal) {
         // WE ARE LIVE: Force internal bindings to use the public VPS IP
         if (targetServer.includes("0.0.0.0") || targetServer.includes("localhost")) {
-            targetServer = targetServer.replace("0.0.0.0", "153.75.91.27").replace("localhost", "153.75.91.27");
+            targetServer = targetServer.replace("0.0.0.0", "rearras.dev").replace("localhost", "rearras.dev");
         }
     } else {
         // WE ARE LOCAL: Ensure internal 0.0.0.0 bindings route back to your local PC
