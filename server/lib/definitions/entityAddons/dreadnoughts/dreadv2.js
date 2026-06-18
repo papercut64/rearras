@@ -1,7 +1,7 @@
 const {combineStats, dereference, makeAura, makeAuto, makeHat, weaponArray, weaponMirror} = require('../../facilitators.js')
 const {base, smshskl} = require('../../constants.js')
 const g = require('../../gunvals.js')
-const speedMulti = 1.3
+const speedMulti = 1.1
 
 // ARMS RACE V2 DREADNOUGHTS BY FROSTBYTE
 
@@ -1251,7 +1251,7 @@ Class.appeaser_dreadsV2 = {
 				ASPECT: 1.8
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.spam, {size: 1, health: 1.03, range: 0.4, spray: 3}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.spam, {size: 1, health: 1.03, range: 0.4, spray: 2}]),
 				TYPE: "bullet"
 			}
 		},
@@ -1262,7 +1262,7 @@ Class.appeaser_dreadsV2 = {
 				ASPECT: 1.8
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.spam, {size: 0.85, health: 1.03, range: 0.4, reload: 1.05, spray: 3}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.spam, {size: 0.85, health: 1.03, range: 0.4, reload: 1.05, spray: 2}]),
 				TYPE: "bullet"
 			}
 		}
@@ -1909,7 +1909,7 @@ Class.arbitrator_dreadsV2 = {
 				ASPECT: 1.8
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 0.9,  health: 1.09, range: 0.5, reload: 1, spray: 3}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 0.9,  health: 1.09, range: 0.5, reload: 1, spray: 2}]),
 				TYPE: "bullet",
 			}
 		},
@@ -1920,7 +1920,7 @@ Class.arbitrator_dreadsV2 = {
 				ASPECT: 1.8
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 0.9, health: 1.09, range: 0.5, reload: 1.05, spray: 3}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 0.9, health: 1.09, range: 0.5, reload: 1.05, spray: 2}]),
 				TYPE: "bullet",
 			}
 		},
@@ -1931,7 +1931,7 @@ Class.arbitrator_dreadsV2 = {
 				ASPECT: 1.8
 			},
 			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 1,  health: 1.09, range: 0.5, reload: 1.1, spray: 3}]),
+				SHOOT_SETTINGS: combineStats([g.basic, g.machineGun, g.twin, g.triplet, g.spam, g.spam, {size: 1,  health: 1.09, range: 0.5, reload: 1.1, spray: 2}]),
 				TYPE: "bullet",
 			}
 		}

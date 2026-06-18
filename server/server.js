@@ -141,6 +141,15 @@ server = http.createServer((req, res) => {
                     featured: false,
                     region: "Local",
                     gameMode: "Sandbox"
+                },
+                                {
+                    ip: process.env.NODE_ENV === 'local' ? "localhost:4004" : "rearras.dev:3004",
+                    players: global.servers[4]?.players || 0,
+                    maxPlayers: 80,
+                    id: "lh",
+                    featured: false,
+                    region: "Local",
+                    gameMode: "March Madness"
                 }
             ]);
         } break;

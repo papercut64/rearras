@@ -140,6 +140,15 @@ module.exports = {
                             roomData: 'room_nexus_portals', 
                             location: 'prt3' 
                         }
+                    },
+                    {
+                        ip: process.env.NODE_ENV === 'local' ? 'localhost:4004' : 'rearras.dev:3004', 
+                        portal_properties: {
+                            spawn_chance: 2, 
+                            color: 'black', 
+                            roomData: 'room_nexus_portals', 
+                            location: 'prt1' 
+                        }
                     }
                 ]
             }
@@ -164,6 +173,60 @@ module.exports = {
             properties: { // This overrides settings in the config.js file, assuming the selected gamemode doesn't also override it.
                 //teams: 4,
                 //bot_cap: 0
+                server_travel_properties: {
+                    loop_interval: 10000, // Executes every 10 seconds
+                    portals: 1, // Allows up to 3 portals to exist at once
+                },
+                server_travel: [
+                    {
+                        // Dynamically chooses local port 4001 or live port 3001
+                        ip: process.env.NODE_ENV === 'local' ? 'localhost:4003' : 'rearras.dev:3003', 
+                        portal_properties: {
+                            spawn_chance: 2, 
+                            color: 'blue',
+                            roomData: '', 
+                            location: '' 
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            share_client_server: false, // Only one server at a time can have this enabled.
+            // The above is required if your VM (the machine that hosts the website stuff) doesn't support multi-ports and forces everything through the main server.
+            // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
+
+            host: '127.0.0.1', // Server host location.
+            port: 4004, // The port on the server.
+            id: 'lh', // (<host>/#<id>)
+
+            region: "Local", // The region the server is on.
+            gamemode: ['march_madness'], // The selected gamemode.
+            player_cap: 16, // Not including bots. Set to 0 to disable.
+
+            featured: false, // Whether the server is featured or not.
+            unlisted: false, // Whether the server shows up in the server list (if its id isn't in the url).
+            private: false, // Whether the server requires a privileged token to join (except through server travel).
+
+            properties: { // This overrides settings in the config.js file, assuming the selected gamemode doesn't also override it.
+                //teams: 4,
+                //bot_cap: 0
+                server_travel_properties: {
+                    loop_interval: 10000, // Executes every 10 seconds
+                    portals: 1, // Allows up to 3 portals to exist at once
+                },
+                server_travel: [
+                    {
+                        // Dynamically chooses local port 4001 or live port 3001
+                        ip: process.env.NODE_ENV === 'local' ? 'localhost:4003' : 'rearras.dev:3003', 
+                        portal_properties: {
+                            spawn_chance: 2, 
+                            color: 'blue',
+                            roomData: '', 
+                            location: '' 
+                        }
+                    }
+                ]
             }
         },
     ],
