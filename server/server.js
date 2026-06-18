@@ -107,7 +107,8 @@ server = http.createServer((req, res) => {
         case "/getServers.json": {
             readString = JSON.stringify([
                 {
-                    ip: "rearras.dev:3001", // <-- Tell browser to knock on Nginx's door!
+                    //ip: "localhost:4001", //for local testing
+                    ip: "rearras.dev:3001",
                     players: global.servers[0]?.players || 0,
                     maxPlayers: 80,
                     id: "la",
@@ -116,7 +117,8 @@ server = http.createServer((req, res) => {
                     gameMode: "TDM"
                 },
                 {
-                    ip: "rearras.dev:3002", // <-- Tell browser to knock on Nginx's door!
+                    //ip: "localhost:4002", //for local testing
+                    ip: "rearras.dev:3002",
                     players: global.servers[1]?.players || 0,
                     maxPlayers: 80,
                     id: "ls",
@@ -125,7 +127,8 @@ server = http.createServer((req, res) => {
                     gameMode: "Siege Blitz"
                 },
                 {
-                    ip: "rearras.dev:3003", // <-- Tell browser to knock on Nginx's door!
+                    //ip: "localhost:4003", //for local testing
+                    ip: "rearras.dev:3003",
                     players: global.servers[2]?.players || 0,
                     maxPlayers: 80,
                     id: "lx",
@@ -134,7 +137,8 @@ server = http.createServer((req, res) => {
                     gameMode: "Nexus"
                 },
                 {
-                    ip: "rearras.dev:3099", // <-- Tell browser to knock on Nginx's door!
+                    //ip: "localhost:4099", //for local testing
+                    ip: "rearras.dev:3099",
                     players: global.servers[3]?.players || 0,
                     maxPlayers: 80,
                     id: "lz",
