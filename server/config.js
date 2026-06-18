@@ -19,7 +19,7 @@ module.exports = {
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
             host: '127.0.0.1', // Server host location.
-            port: 3001, // The port on the server.
+            port: 4001, // The port on the server.
             id: 'la', // (<host>/#<id>)
 
             region: "Local", // The region the server is on.
@@ -41,7 +41,7 @@ module.exports = {
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
             host: '127.0.0.1', // Server host location.
-            port: 3002, // The port on the server.
+            port: 4002, // The port on the server.
             id: 'ls', // (<host>/#<id>)
 
             region: "Local", // The region the server is on.
@@ -64,7 +64,7 @@ module.exports = {
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
             host: '127.0.0.1', // Server host location.
-            port: 3003, // The port on the server.
+            port: 4003, // The port on the server.
             id: 'lx', // (<host>/#<id>)
 
             region: "Local", // The region the server is on.
@@ -87,7 +87,7 @@ module.exports = {
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
             host: '127.0.0.1', // Server host location.
-            port: 3099, // The port on the server.
+            port: 4099, // The port on the server.
             id: 'lz', // (<host>/#<id>)
 
             region: "Local", // The region the server is on.
