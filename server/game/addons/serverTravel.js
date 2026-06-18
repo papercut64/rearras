@@ -29,11 +29,10 @@ async function getServer(server) {
                 ip: server.ip,
                 destination: `http://${server.ip}` // Force local unencrypted connection
             };
-        } else {
+            } else {
             // --- PRODUCTION MODE: Internal VPS Fetch ---
             let masterPort = 3000; 
             
-            // Force the fetch to stay strictly on the local machine (127.0.0.1) to bypass DNS/Firewall blocks
             let data = await fetch(`http://127.0.0.1:${masterPort}/portalPermission`)
                 .then(async (res) => {
                     let text = await res.text();
@@ -51,15 +50,26 @@ async function getServer(server) {
                 
             if (!data) return false;
             
-            // Figure out what port this worker is trying to target (e.g., "3001")
-            let targetPort = server.ip.split(":")[1];
+            // Fix: Calculate the internal port offset (e.g., Target 3002 -> Internal 4002)
+            let targetPort = parseInt(server.ip.split(":")[1]);
+            let internalPort = targetPort + 1000; 
             
-            // Find the correct statistics from the payload array matching that port
-            let matchedData = Array.isArray(data) ? data.find(s => s.ip.endsWith(targetPort)) : null;
+            // Find the statistics matching the calculated internal port
+            let matchedData = Array.isArray(data) ? data.find(s => s.ip.endsWith(`:${internalPort}`)) : null;
             let finalData = matchedData || (Array.isArray(data) ? data[0] : data);
 
+            // Re-apply the clean names dictionary for production
+            let rawMode = finalData.gameMode ? finalData.gameMode.toLowerCase().replace(/\s+/g, '_') : 'tdm';
+            let cleanNames = {
+                'tdm': 'TDM',
+                'siege_blitz': 'Siege Blitz',
+                'nexus': 'Nexus',
+                'sandbox': 'Sandbox'
+            };
+            let displayName = cleanNames[rawMode] || (finalData.gameMode || "Game Room");
+
             return {
-                name: (finalData.gameMode || "Game Room").trim(),
+                name: displayName,
                 players: finalData.players || 0,
                 ip: server.ip,
                 destination: `https://${server.ip}` // Passes secure HTTPS route to the player's browser
