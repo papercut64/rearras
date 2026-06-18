@@ -133,7 +133,7 @@ module.exports = {
                         }
                     },
                     {
-                        ip: process.env.NODE_ENV === 'local' ? 'localhost:4003' : 'rearras.dev:3099', 
+                        ip: process.env.NODE_ENV === 'local' ? 'localhost:4003' : 'rearras.dev:3003', 
                         portal_properties: {
                             spawn_chance: 3, 
                             color: 'yellow', 
