@@ -1,22 +1,73 @@
 async function getServer(server) {
     try {
-        // Extract the port number from the ip string (e.g., "localhost:4001" -> "4001")
-        let currentWorkerPort = parseInt(server.ip.split(":")[1]);
-        
-        // Directly find the local room data right out of your config configuration file
-        let matchedConfig = Config.servers.find(s => s.port === currentWorkerPort);
-        
-        if (!matchedConfig) return false;
+        if (!server || !server.ip || !server.ip.includes(":")) {
+            return false; // Skip if it's a placeholder IP
+        }
 
-        // Instantly return the formatting the portal engine needs, completely bypassing 'fetch'
-        return {
-            name: matchedConfig.gamemode[0].toUpperCase(), // e.g., "TDM" or "NEXUS"
-            players: 0, // Default to 0 for local testing
-            ip: server.ip,
-            destination: `http://${server.ip}` // Forces standard local http/ws connection
-        };
+        // --- ADAPTIVE NETWORK TOGGLE ---
+        let isLocal = process.env.NODE_ENV === 'local' || server.ip.includes("localhost") || server.ip.includes("127.0.0.1");
+
+        if (isLocal) {
+            // LOCAL MODE: Safe memory lookup
+            let currentWorkerPort = parseInt(server.ip.split(":")[1]);
+            let matchedConfig = Config.servers.find(s => s.port === currentWorkerPort);
+            if (!matchedConfig) return false;
+
+            // Clean Name Translation for the portal hover labels
+            let rawMode = matchedConfig.gamemode[0];
+            let cleanNames = {
+                'tdm': 'TDM',
+                'siege_blitz': 'Siege Blitz',
+                'nexus': 'Nexus',
+                'sandbox': 'Sandbox'
+            };
+            let displayName = cleanNames[rawMode] || rawMode.toUpperCase();
+
+            return {
+                name: displayName,
+                players: 0, 
+                ip: server.ip,
+                destination: `http://${server.ip}` // Force local unencrypted connection
+            };
+        } else {
+            // PRODUCTION MODE: Internal VPS Fetch
+            // Fetches directly from the master thread port (3000) over local loopback
+            let masterPort = 3000; 
+            
+            let data = await fetch(`http://127.0.0.1:${masterPort}/portalPermission`)
+                .then(async (res) => {
+                    let text = await res.text();
+                    try {
+                        return JSON.parse(text); // Protects against "Denied" HTML errors
+                    } catch {
+                        console.warn("[Server Travel] Invalid JSON from master thread:", text);
+                        return false;
+                    }
+                })
+                .catch((err) => {
+                    console.error("[Server Travel] VPS Internal Fetch Failed:", err.message);
+                    return false;
+                });
+                
+            if (!data) return false;
+            
+            // Figure out what port this worker is trying to target (e.g., "3001")
+            let targetPort = server.ip.split(":")[1];
+            
+            // Find the correct statistics from the payload array matching that port
+            let matchedData = Array.isArray(data) ? data.find(s => s.ip.endsWith(targetPort)) : null;
+            let finalData = matchedData || (Array.isArray(data) ? data[0] : data);
+
+            return {
+                name: (finalData.gameMode || "Game Room").trim(),
+                players: finalData.players || 0,
+                ip: server.ip,
+                destination: `https://${server.ip}` // Passes secure HTTPS route to the player's browser
+            };
+        }
     } catch (e) {
-        console.log(e);
+        console.error("[Server Travel] getServer failed:", e);
+        return false;
     }
 }
 
