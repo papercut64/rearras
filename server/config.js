@@ -27,12 +27,12 @@ module.exports = {
             player_cap: 80, // Not including bots. Set to 0 to disable.
 
             featured: false, // Whether the server is featured or not.
-            unlisted: true, // Whether the server shows up in the server list (if its id isn't in the url).
-            private: true, // Whether the server requires a privileged token to join (except through server travel).
-
+            unlisted: false, // Whether the server shows up in the server list (if its id isn't in the url).
+            private: false, // Whether the server requires a privileged token to join (except through server travel).
             properties: { // This overrides settings in the config.js file, assuming the selected gamemode doesn't also override it.
                 teams: 4,
-                bot_cap: 20
+                bot_cap: 20,
+                allow_server_travel: true
             }
         },
         {
@@ -51,11 +51,11 @@ module.exports = {
             featured: false, // Whether the server is featured or not.
             unlisted: false, // Whether the server shows up in the server list (if its id isn't in the url).
             private: false, // Whether the server requires a privileged token to join (except through server travel).
-
+            allow_server_travel: true, // Whether players can join this server through server travel. Server travel allows players to bypass the player cap and private status, but not the bot cap.
             properties: { // This overrides settings in the config.js file, assuming the selected gamemode doesn't also override it.
                 teams: 4,
-                bot_cap: 0
-                //allow_server_travel: true
+                bot_cap: 0,
+                allow_server_travel: true
             }
         },
                 {
@@ -77,8 +77,8 @@ module.exports = {
 
             properties: { // This overrides settings in the config.js file, assuming the selected gamemode doesn't also override it.
                 teams: 4,
-                bot_cap: 0
-                //allow_server_travel: true
+                bot_cap: 0,
+                allow_server_travel: true
             }
         },
         {
