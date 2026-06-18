@@ -30,17 +30,18 @@ async function getServer(server) {
                 destination: `http://${server.ip}` // Force local unencrypted connection
             };
         } else {
-            // PRODUCTION MODE: Internal VPS Fetch
-            // Fetches directly from the master thread port (3000) over local loopback
+            // PRODUCTION MODE: Hardcoded Local Loopback
+            // DO NOT use the domain name here, it triggers the firewall/timeout seen in image_dff224.png
             let masterPort = 3000; 
             
+            // Force the fetch to stay strictly on the local machine (127.0.0.1)
             let data = await fetch(`http://127.0.0.1:${masterPort}/portalPermission`)
                 .then(async (res) => {
                     let text = await res.text();
                     try {
-                        return JSON.parse(text); // Protects against "Denied" HTML errors
+                        return JSON.parse(text);
                     } catch {
-                        console.warn("[Server Travel] Invalid JSON from master thread:", text);
+                        console.warn("[Server Travel] Server responded with raw text:", text);
                         return false;
                     }
                 })
@@ -48,6 +49,7 @@ async function getServer(server) {
                     console.error("[Server Travel] VPS Internal Fetch Failed:", err.message);
                     return false;
                 });
+            // ... rest of your logic
                 
             if (!data) return false;
             
