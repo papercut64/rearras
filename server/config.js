@@ -57,7 +57,7 @@ module.exports = {
                 bot_cap: 0,
                 allow_server_travel: true,
                 server_travel_properties: {
-                    loop_interval: 10000, // how often the portal loop executes in seconds
+                    loop_interval: 1000, // how often the portal loop executes in seconds
                     portals: 1, // amount of portals to spawn
                 },
                 server_travel: [
@@ -89,29 +89,36 @@ module.exports = {
                 
                 // --- NEW PORTAL LOGIC ---
                 server_travel_properties: {
-                    loop_interval: 10000, // Executes every 10 seconds
+                    loop_interval: 1000, // Executes every 10 seconds
                     portals: 3, // Allows up to 3 portals to exist at once
                 },
                 server_travel: [
                     {
-                        ip: 'rearras.dev:3001', // Points publicly to TDM
+                        // Dynamically chooses local port 4001 or live port 3001
+                        ip: process.env.NODE_ENV === 'local' ? 'localhost:4001' : 'rearras.dev:3001', 
                         portal_properties: {
                             spawn_chance: 2, 
-                            color: 'blue', 
+                            color: 'blue',
+                            roomData: 'room_nexus_portals', 
+                            location: 'prt1' 
                         }
                     },
                     {
-                        ip: 'rearras.dev:3002', // Points publicly to Siege Blitz
+                        ip: process.env.NODE_ENV === 'local' ? 'localhost:4002' : 'rearras.dev:3002', 
                         portal_properties: {
                             spawn_chance: 2, 
-                            color: 'purple', 
+                            color: 'purple',
+                            roomData: 'room_nexus_portals', 
+                            location: 'prt2'  
                         }
                     },
                     {
-                        ip: 'rearras.dev:3099', // Points publicly to Sandbox
+                        ip: process.env.NODE_ENV === 'local' ? 'localhost:4003' : 'rearras.dev:3099', 
                         portal_properties: {
-                            spawn_chance: 3, // Slightly rarer
+                            spawn_chance: 3, 
                             color: 'yellow', 
+                            roomData: 'room_nexus_portals', 
+                            location: 'prt3' 
                         }
                     }
                 ]

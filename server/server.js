@@ -107,8 +107,7 @@ server = http.createServer((req, res) => {
         case "/getServers.json": {
             readString = JSON.stringify([
                 {
-                    //ip: "localhost:4001", //for local testing
-                    ip: "rearras.dev:3001",
+                    ip: process.env.NODE_ENV === 'local' ? "localhost:4001" : "rearras.dev:3001",
                     players: global.servers[0]?.players || 0,
                     maxPlayers: 80,
                     id: "la",
@@ -117,8 +116,7 @@ server = http.createServer((req, res) => {
                     gameMode: "TDM"
                 },
                 {
-                    //ip: "localhost:4002", //for local testing
-                    ip: "rearras.dev:3002",
+                    ip: process.env.NODE_ENV === 'local' ? "localhost:4002" : "rearras.dev:3002",
                     players: global.servers[1]?.players || 0,
                     maxPlayers: 80,
                     id: "ls",
@@ -127,8 +125,7 @@ server = http.createServer((req, res) => {
                     gameMode: "Siege Blitz"
                 },
                 {
-                    //ip: "localhost:4003", //for local testing
-                    ip: "rearras.dev:3003",
+                    ip: process.env.NODE_ENV === 'local' ? "localhost:4003" : "rearras.dev:3003",
                     players: global.servers[2]?.players || 0,
                     maxPlayers: 80,
                     id: "lx",
@@ -137,8 +134,7 @@ server = http.createServer((req, res) => {
                     gameMode: "Nexus"
                 },
                 {
-                    //ip: "localhost:4099", //for local testing
-                    ip: "rearras.dev:3099",
+                    ip: process.env.NODE_ENV === 'local' ? "localhost:4099" : "rearras.dev:3099",
                     players: global.servers[3]?.players || 0,
                     maxPlayers: 80,
                     id: "lz",
@@ -186,17 +182,21 @@ server = http.createServer((req, res) => {
         case "/portalPermission": {
             ok = false;
             let sserver = [];
-            if (Config.allow_server_travel && global.launchedOnMainServer) {
+            // Keep the allow_server_travel requirement active
+            if (Config.allow_server_travel) {
                 for (let i = 0; i < global.servers.length; i++) {
                     let server = global.servers[i];
-                    if (server.gameManager) sserver.push(server);
+                    if (server.ip) sserver.push(server);
                 }
                 res.writeHead(200);
-                res.end(JSON.stringify(sserver.map((server) => ({
-                    ip: server.ip,
-                    players: server.players,
-                    gameMode: server.gameMode,
-                }))));
+                res.end(JSON.stringify(sserver.map((server) => {
+                    let matchedConfig = Config.servers.find(s => s.id === server.id);
+                    return {
+                        ip: matchedConfig ? `${matchedConfig.host}:${matchedConfig.port}` : server.ip,
+                        players: server.players || 0,
+                        gameMode: server.gameMode || "Game Room",
+                    };
+            })));
             } else {
                 res.writeHead(404);
                 res.end("Denied.");
