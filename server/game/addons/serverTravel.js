@@ -1,40 +1,22 @@
 async function getServer(server) {
     try {
-        // --- ADAPTIVE NETWORK TOGGLE ---
-        // Automatically checks if your environment is set to local OR if your config IP says 'localhost'
-        let isLocal = process.env.NODE_ENV === 'local' || server.ip.includes("localhost") || server.ip.includes("127.0.0.1");
+        // Extract the port number from the ip string (e.g., "localhost:4001" -> "4001")
+        let currentWorkerPort = parseInt(server.ip.split(":")[1]);
+        
+        // Directly find the local room data right out of your config configuration file
+        let matchedConfig = Config.servers.find(s => s.port === currentWorkerPort);
+        
+        if (!matchedConfig) return false;
 
-        if (isLocal) {
-            // LOCAL MODE: Safe memory lookup
-            let portMatch = server.ip.match(/:(\d+)/);
-            let currentWorkerPort = portMatch ? parseInt(portMatch[1]) : 4001;
-            
-            let matchedConfig = Config.servers.find(s => s.port === currentWorkerPort);
-            if (!matchedConfig) return false;
-
-            // --- NEW: CLEAN CLEAN NAME TRANSLATION ---
-            let rawMode = matchedConfig.gamemode[0]; // e.g. 'siege_blitz'
-            let cleanNames = {
-                'tdm': 'TDM',
-                'siege_blitz': 'Siege Blitz',
-                'nexus': 'Nexus',
-                'sandbox': 'Sandbox'
-            };
-            
-            // Fallback to capitalizing the raw string if you create a new mode later
-            let displayName = cleanNames[rawMode] || rawMode.toUpperCase();
-            // ----------------------------------------
-
-            return {
-                name: displayName, // Now passes "Siege Blitz" instead of "SIEGE_BLITZ"
-                players: 0, 
-                ip: server.ip,
-                destination: `http://${server.ip}`
-            };
-        }
+        // Instantly return the formatting the portal engine needs, completely bypassing 'fetch'
+        return {
+            name: matchedConfig.gamemode[0].toUpperCase(), // e.g., "TDM" or "NEXUS"
+            players: 0, // Default to 0 for local testing
+            ip: server.ip,
+            destination: `http://${server.ip}` // Forces standard local http/ws connection
+        };
     } catch (e) {
-        console.error("[ServerTravel] getServer error:", e);
-        return false;
+        console.log(e);
     }
 }
 
@@ -55,17 +37,13 @@ let Portal = class {
         this.body.color.base = color;
         this.body.godmode = true;
         this.body.team = -101;
+        this.body.isPortal = true;
         this.body.name = this.name;
-        
-        // Safety check to ensure settings object exists before assigning to it
-        if (!this.body.settings) this.body.settings = {};
-        
         this.body.settings.scoreLabel = `${this.players} player${this.players === 1 ? "" : "s"}`;
         this.body.settings.destination = this.destination;
         this.body.allowedOnMinimap = true;
         this.body.alwaysShowOnMinimap = true;
         this.body.minimapColor = 19;
-        
         let updateInterval = setInterval(async () => {
             let data = await getServer({ip: this.ip});
             if (data) {
@@ -73,7 +51,6 @@ let Portal = class {
                 this.body.name = data.name;
             }
         }, 5000);
-        
         setTimeout(() => {
             clearInterval(updateInterval);
             this.body.destroy();
@@ -81,8 +58,8 @@ let Portal = class {
         }, duration);
     }
 }
-
 class serverTravelHandler {
+    // Initialize a static tracking Set directly attached to the class context
     static pendingPortalSpawns = new Set();
 
     constructor(self, spawnChance, color) {
@@ -90,92 +67,49 @@ class serverTravelHandler {
         this.spawnChance = spawnChance;
         this.color = color;
     }
-    
     async spawnRandom() {
-        try {
-            let spawnChance = Math.random() < 1 / this.spawnChance;
-            if (!spawnChance) return;
-
+        let spawnChance = Math.random() < 1 / this.spawnChance;
+        if (spawnChance) {
             let server = await getServer(this.self);
-            if (!server) return;
-
-            // Duplicate checks
-            if (serverTravelHandler.pendingPortalSpawns.has(server.destination)) return; 
-            let entitiesList = global.entities ? Object.values(global.entities) : [];
-            let duplicateExists = entitiesList.some(e => e && e.isPortal && e.settings && e.settings.destination === server.destination);
-            if (duplicateExists) return; 
-
-            // Mark as pending
-            serverTravelHandler.pendingPortalSpawns.add(server.destination);
-
-            let spawnLocation;
-            let portalProps = this.self.portal_properties || {};
-            let roomDataFile = portalProps.roomData; 
-            let targetLocation = portalProps.location;
-
-            if (roomDataFile && targetLocation) {
-                try {
-                    let grid = require(`../roomSetup/rooms/${roomDataFile}.js`);
-                    let validSpots = [];
-
-                    for (let row = 0; row < grid.length; row++) {
-                        for (let col = 0; col < grid[row].length; col++) {
-                            let tile = grid[row][col];
-                            if (tile === targetLocation || (tile && tile.id === targetLocation)) {
-                                validSpots.push({ col, row });
-                            }
-                        }
-                    }
-
-                    if (validSpots.length > 0) {
-                        let spot = validSpots[Math.floor(Math.random() * validSpots.length)];
-                        let tileW = Config.map_tile_width || 420;
-                        let tileH = Config.map_tile_height || 420;
-                        let room = global.gameManager.room;
-                        
-                        let leftEdge = typeof room.x !== 'undefined' ? room.x : -(grid[0].length * tileW) / 2;
-                        let topEdge = typeof room.y !== 'undefined' ? room.y : -(grid.length * tileH) / 2;
-
-                        let jitterX = (Math.random() - 0.5) * (tileW * 0.8);
-                        let jitterY = (Math.random() - 0.5) * (tileH * 0.8);
-
-                        spawnLocation = {
-                            x: leftEdge + (spot.col * tileW) + (tileW / 2) + jitterX,
-                            y: topEdge + (spot.row * tileH) + (tileH / 2) + jitterY
-                        };
-                    }
-                } catch (err) {
-                    console.error(`[Server Travel] Map scanner failed on ${roomDataFile}.js:`, err);
+            if (server) {
+                // Gate 1: Check the static class-level tracker safely
+                if (serverTravelHandler.pendingPortalSpawns.has(server.destination)) {
+                    return; // Already spawning this type, abort!
                 }
-            }
 
-            // Fallback
-            if (!spawnLocation) {
-                spawnLocation = global.gameManager.room.random();
-            }
+                // Gate 2: Convert the active entity hash-map safely to an array
+                let entitiesList = global.entities ? Object.values(global.entities) : [];
+                
+                // Gate 3: Scan the live map for an active portal matching this destination
+                let duplicateExists = entitiesList.some(e => 
+                    e && e.isPortal && e.settings && e.settings.destination === server.destination
+                );
+                
+                if (duplicateExists) {
+                    return; // Active portal already exists on the map, abort!
+                }
 
-            let portal = new Portal(server.name, server.players, server.destination, server.ip);
-            let portalLifespan = 30000; 
-            
-            portal.spawn(spawnLocation, this.color, portalLifespan);
+                // Mark as pending immediately before running asynchronous spawning code
+                serverTravelHandler.pendingPortalSpawns.add(server.destination);
 
-            // Successfully spawned, queue the cleanup
-            setTimeout(() => {
-                serverTravelHandler.pendingPortalSpawns.delete(server.destination);
-            }, portalLifespan);
+                let tiles = global.gameManager.room.portalTiles ? global.gameManager.room.portalTiles.filter(tile => tile && !tile.data.has_portal) : [];
+                if (!tiles.length) tiles = false;
+                
+                let portal = new Portal(server.name, server.players, server.destination, server.ip);
+                
+                // Portal lifespan configuration (e.g., 20 seconds)
+                let portalLifespan = 20000; 
+                
+                portal.spawn(tiles ? ran.choose(tiles) : global.gameManager.room.random(), this.color, portalLifespan);
 
-        } catch (fatalError) {
-            console.error("[Server Travel] Fatal Spawn Error:", fatalError);
-            // FAILSAFE: Force clear the tracker if a crash occurred so the room isn't permanently locked
-            if (this.self && this.self.ip) {
-                serverTravelHandler.pendingPortalSpawns.forEach(dest => {
-                    if (dest.includes(this.self.ip)) serverTravelHandler.pendingPortalSpawns.delete(dest);
-                });
+                // Clean up the pending tracker only after the portal lifespan finishes and it despawns
+                setTimeout(() => {
+                    serverTravelHandler.pendingPortalSpawns.delete(server.destination);
+                }, portalLifespan);
             }
         }
     }
 }
-
 if (loadedAddons.includes("chatCommands")) {
     addChatCommand({
         command: ["join", "j"],
