@@ -125,37 +125,22 @@ class serverTravelHandler {
         if (spawnChance) {
             let server = await getServer(this.self);
             if (server) {
-                // Gate 1: Check the static class-level tracker safely
-                if (serverTravelHandler.pendingPortalSpawns.has(server.destination)) {
-                    return; // Already spawning this type, abort!
-                }
-
-                // Gate 2: Convert the active entity hash-map safely to an array
+                // Duplicate prevention
+                if (serverTravelHandler.pendingPortalSpawns.has(server.destination)) return;
+                
                 let entitiesList = global.entities ? Object.values(global.entities) : [];
-                
-                // Gate 3: Scan the live map for an active portal matching this destination
-                let duplicateExists = entitiesList.some(e => 
-                    e && e.isPortal && e.settings && e.settings.destination === server.destination
-                );
-                
-                if (duplicateExists) {
-                    return; // Active portal already exists on the map, abort!
-                }
+                if (entitiesList.some(e => e && e.isPortal && e.settings && e.settings.destination === server.destination)) return;
 
-                // Mark as pending immediately before running asynchronous spawning code
                 serverTravelHandler.pendingPortalSpawns.add(server.destination);
 
-                let tiles = global.gameManager.room.portalTiles ? global.gameManager.room.portalTiles.filter(tile => tile && !tile.data.has_portal) : [];
-                if (!tiles.length) tiles = false;
-                
+                // --- FORCED SPAWN LOGIC ---
+                // Skip the tile filter and force a valid room coordinate
                 let portal = new Portal(server.name, server.players, server.destination, server.ip);
+                let portalLifespan = 20000;
                 
-                // Portal lifespan configuration (e.g., 20 seconds)
-                let portalLifespan = 20000; 
-                
-                portal.spawn(tiles ? ran.choose(tiles) : global.gameManager.room.random(), this.color, portalLifespan);
+                // Force spawn at a random location within the room
+                portal.spawn(global.gameManager.room.random(), this.color, portalLifespan);
 
-                // Clean up the pending tracker only after the portal lifespan finishes and it despawns
                 setTimeout(() => {
                     serverTravelHandler.pendingPortalSpawns.delete(server.destination);
                 }, portalLifespan);
