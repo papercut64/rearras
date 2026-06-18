@@ -107,7 +107,7 @@ server = http.createServer((req, res) => {
         case "/getServers.json": {
             readString = JSON.stringify([
                 {
-                    ip: "rearras.dev:3001", // Your raw IP + room la port
+                    ip: "rearras.dev:4001", // Your raw IP + room la port
                     players: global.servers[0]?.players || 0,
                     maxPlayers: 80,
                     id: "la",
@@ -116,7 +116,7 @@ server = http.createServer((req, res) => {
                     gameMode: "TDM"
                 },
                 {
-                    ip: "rearras.dev:3002", // Your raw IP + room ls port
+                    ip: "rearras.dev:4002", // Your raw IP + room ls port
                     players: global.servers[1]?.players || 0,
                     maxPlayers: 80,
                     id: "ls",
@@ -125,7 +125,7 @@ server = http.createServer((req, res) => {
                     gameMode: "Siege Blitz"
                 },
                                 {
-                    ip: "rearras.dev:3003", // Your raw IP + room lx port
+                    ip: "rearras.dev:4003", // Your raw IP + room lx port
                     players: global.servers[2]?.players || 0,
                     maxPlayers: 80,
                     id: "lx",
@@ -134,7 +134,7 @@ server = http.createServer((req, res) => {
                     gameMode: "Nexus"
                 },
                                 {
-                    ip: "rearras.dev:3099", // Your raw IP + room lz port
+                    ip: "rearras.dev:4099", // Your raw IP + room lz port
                     players: global.servers[3]?.players || 0,
                     maxPlayers: 80,
                     id: "lz",

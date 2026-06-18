@@ -106,7 +106,7 @@ module.exports = {
     ],
 
     // Web Server
-    allow_ACAO: false, // Access-Control-Allow-Origin, allows any server/client to access data from the WebServer.
+    allow_ACAO: true, // Access-Control-Allow-Origin, allows any server/client to access data from the WebServer.
 
     // Map
     map_tile_width: 420,
