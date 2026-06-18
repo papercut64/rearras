@@ -4,7 +4,7 @@ module.exports = {
 
     // Client
     main_menu: 'index.html', // Where the main menu is located (in the /public folder).
-    host: '0.0.0.0', // Game server domain. If the host is 'localhost:NUMBER', the NUMBER must be the port setting.
+    host: 'rearras.dev', // Game server domain. If the host is 'localhost:NUMBER', the NUMBER must be the port setting.
     port: 3000, // Which port to run the web server on.
 
     // Server
@@ -18,7 +18,7 @@ module.exports = {
             // The above is required if your VM (the machine that hosts the website stuff) doesn't support multi-ports and forces everything through the main server.
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
-            host: '0.0.0.0:3001', // Server host location.
+            host: 'rearras.dev:3001', // Server host location.
             port: 3001, // The port on the server.
             id: 'la', // (<host>/#<id>)
 
@@ -40,7 +40,7 @@ module.exports = {
             // The above is required if your VM (the machine that hosts the website stuff) doesn't support multi-ports and forces everything through the main server.
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
-            host: '0.0.0.0:3002', // Server host location.
+            host: 'rearras.dev:3002', // Server host location.
             port: 3002, // The port on the server.
             id: 'ls', // (<host>/#<id>)
 
@@ -63,7 +63,7 @@ module.exports = {
             // The above is required if your VM (the machine that hosts the website stuff) doesn't support multi-ports and forces everything through the main server.
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
-            host: '0.0.0.0:3003', // Server host location.
+            host: 'rearras.dev:3003', // Server host location.
             port: 3003, // The port on the server.
             id: 'lx', // (<host>/#<id>)
 
@@ -86,7 +86,7 @@ module.exports = {
             // The above is required if your VM (the machine that hosts the website stuff) doesn't support multi-ports and forces everything through the main server.
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
-            host: '0.0.0.0:3099', // Server host location.
+            host: 'rearras.dev:3099', // Server host location.
             port: 3099, // The port on the server.
             id: 'lz', // (<host>/#<id>)
 
