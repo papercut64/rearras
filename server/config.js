@@ -18,7 +18,7 @@ module.exports = {
             // The above is required if your VM (the machine that hosts the website stuff) doesn't support multi-ports and forces everything through the main server.
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
-            host: '0.0.0.0', // Server host location.
+            host: 'rearras.dev/room-la', // Server host location.
             port: 3001, // The port on the server.
             id: 'la', // (<host>/#<id>)
 
@@ -40,7 +40,7 @@ module.exports = {
             // The above is required if your VM (the machine that hosts the website stuff) doesn't support multi-ports and forces everything through the main server.
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
-            host: '0.0.0.0', // Server host location.
+            host: 'rearras.dev/room-ls', // Server host location.
             port: 3002, // The port on the server.
             id: 'ls', // (<host>/#<id>)
 
@@ -63,7 +63,7 @@ module.exports = {
             // The above is required if your VM (the machine that hosts the website stuff) doesn't support multi-ports and forces everything through the main server.
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
-            host: '0.0.0.0', // Server host location.
+            host: 'rearras.dev/room-lx', // Server host location.
             port: 3003, // The port on the server.
             id: 'lx', // (<host>/#<id>)
 
@@ -86,7 +86,7 @@ module.exports = {
             // The above is required if your VM (the machine that hosts the website stuff) doesn't support multi-ports and forces everything through the main server.
             // This also overrides the below host and port settings to be identical to the main server's host/port (by default, 3000).
 
-            host: '0.0.0.0', // Server host location.
+            host: 'rearras.dev/room-lz', // Server host location.
             port: 3099, // The port on the server.
             id: 'lz', // (<host>/#<id>)
 
