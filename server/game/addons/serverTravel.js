@@ -1,74 +1,39 @@
 async function getServer(server) {
     try {
-        if (!server || !server.ip || !server.ip.includes(":")) {
-            return false; // Skip if it's a placeholder IP
-        }
-
         // --- ADAPTIVE NETWORK TOGGLE ---
+        // Automatically checks if your environment is set to local OR if your config IP says 'localhost'
         let isLocal = process.env.NODE_ENV === 'local' || server.ip.includes("localhost") || server.ip.includes("127.0.0.1");
 
         if (isLocal) {
             // LOCAL MODE: Safe memory lookup
-            let currentWorkerPort = parseInt(server.ip.split(":")[1]);
+            let portMatch = server.ip.match(/:(\d+)/);
+            let currentWorkerPort = portMatch ? parseInt(portMatch[1]) : 4001;
+            
             let matchedConfig = Config.servers.find(s => s.port === currentWorkerPort);
             if (!matchedConfig) return false;
 
-            // Clean Name Translation for the portal hover labels
-            let rawMode = matchedConfig.gamemode[0];
+            // --- NEW: CLEAN CLEAN NAME TRANSLATION ---
+            let rawMode = matchedConfig.gamemode[0]; // e.g. 'siege_blitz'
             let cleanNames = {
                 'tdm': 'TDM',
                 'siege_blitz': 'Siege Blitz',
                 'nexus': 'Nexus',
                 'sandbox': 'Sandbox'
             };
+            
+            // Fallback to capitalizing the raw string if you create a new mode later
             let displayName = cleanNames[rawMode] || rawMode.toUpperCase();
+            // ----------------------------------------
 
             return {
-                name: displayName,
+                name: displayName, // Now passes "Siege Blitz" instead of "SIEGE_BLITZ"
                 players: 0, 
                 ip: server.ip,
-                destination: `http://${server.ip}` // Force local unencrypted connection
-            };
-        } else {
-            // PRODUCTION MODE: Hardcoded Local Loopback
-            // DO NOT use the domain name here, it triggers the firewall/timeout seen in image_dff224.png
-            let masterPort = 3000; 
-            
-            // Force the fetch to stay strictly on the local machine (127.0.0.1)
-            let data = await fetch(`http://127.0.0.1:${masterPort}/portalPermission`)
-                .then(async (res) => {
-                    let text = await res.text();
-                    try {
-                        return JSON.parse(text);
-                    } catch {
-                        console.warn("[Server Travel] Server responded with raw text:", text);
-                        return false;
-                    }
-                })
-                .catch((err) => {
-                    console.error("[Server Travel] VPS Internal Fetch Failed:", err.message);
-                    return false;
-                });
-            // ... rest of your logic
-                
-            if (!data) return false;
-            
-            // Figure out what port this worker is trying to target (e.g., "3001")
-            let targetPort = server.ip.split(":")[1];
-            
-            // Find the correct statistics from the payload array matching that port
-            let matchedData = Array.isArray(data) ? data.find(s => s.ip.endsWith(targetPort)) : null;
-            let finalData = matchedData || (Array.isArray(data) ? data[0] : data);
-
-            return {
-                name: (finalData.gameMode || "Game Room").trim(),
-                players: finalData.players || 0,
-                ip: server.ip,
-                destination: `https://${server.ip}` // Passes secure HTTPS route to the player's browser
+                destination: `http://${server.ip}`
             };
         }
     } catch (e) {
-        console.error("[Server Travel] getServer failed:", e);
+        console.error("[ServerTravel] getServer error:", e);
         return false;
     }
 }
@@ -90,13 +55,17 @@ let Portal = class {
         this.body.color.base = color;
         this.body.godmode = true;
         this.body.team = -101;
-        this.body.isPortal = true;
         this.body.name = this.name;
+        
+        // Safety check to ensure settings object exists before assigning to it
+        if (!this.body.settings) this.body.settings = {};
+        
         this.body.settings.scoreLabel = `${this.players} player${this.players === 1 ? "" : "s"}`;
         this.body.settings.destination = this.destination;
         this.body.allowedOnMinimap = true;
         this.body.alwaysShowOnMinimap = true;
         this.body.minimapColor = 19;
+        
         let updateInterval = setInterval(async () => {
             let data = await getServer({ip: this.ip});
             if (data) {
@@ -104,6 +73,7 @@ let Portal = class {
                 this.body.name = data.name;
             }
         }, 5000);
+        
         setTimeout(() => {
             clearInterval(updateInterval);
             this.body.destroy();
@@ -111,8 +81,8 @@ let Portal = class {
         }, duration);
     }
 }
+
 class serverTravelHandler {
-    // Initialize a static tracking Set directly attached to the class context
     static pendingPortalSpawns = new Set();
 
     constructor(self, spawnChance, color) {
@@ -120,34 +90,92 @@ class serverTravelHandler {
         this.spawnChance = spawnChance;
         this.color = color;
     }
+    
     async spawnRandom() {
-        let spawnChance = Math.random() < 1 / this.spawnChance;
-        if (spawnChance) {
+        try {
+            let spawnChance = Math.random() < 1 / this.spawnChance;
+            if (!spawnChance) return;
+
             let server = await getServer(this.self);
-            if (server) {
-                // Duplicate prevention
-                if (serverTravelHandler.pendingPortalSpawns.has(server.destination)) return;
-                
-                let entitiesList = global.entities ? Object.values(global.entities) : [];
-                if (entitiesList.some(e => e && e.isPortal && e.settings && e.settings.destination === server.destination)) return;
+            if (!server) return;
 
-                serverTravelHandler.pendingPortalSpawns.add(server.destination);
+            // Duplicate checks
+            if (serverTravelHandler.pendingPortalSpawns.has(server.destination)) return; 
+            let entitiesList = global.entities ? Object.values(global.entities) : [];
+            let duplicateExists = entitiesList.some(e => e && e.isPortal && e.settings && e.settings.destination === server.destination);
+            if (duplicateExists) return; 
 
-                // --- FORCED SPAWN LOGIC ---
-                // Skip the tile filter and force a valid room coordinate
-                let portal = new Portal(server.name, server.players, server.destination, server.ip);
-                let portalLifespan = 20000;
-                
-                // Force spawn at a random location within the room
-                portal.spawn(global.gameManager.room.random(), this.color, portalLifespan);
+            // Mark as pending
+            serverTravelHandler.pendingPortalSpawns.add(server.destination);
 
-                setTimeout(() => {
-                    serverTravelHandler.pendingPortalSpawns.delete(server.destination);
-                }, portalLifespan);
+            let spawnLocation;
+            let portalProps = this.self.portal_properties || {};
+            let roomDataFile = portalProps.roomData; 
+            let targetLocation = portalProps.location;
+
+            if (roomDataFile && targetLocation) {
+                try {
+                    let grid = require(`../roomSetup/rooms/${roomDataFile}.js`);
+                    let validSpots = [];
+
+                    for (let row = 0; row < grid.length; row++) {
+                        for (let col = 0; col < grid[row].length; col++) {
+                            let tile = grid[row][col];
+                            if (tile === targetLocation || (tile && tile.id === targetLocation)) {
+                                validSpots.push({ col, row });
+                            }
+                        }
+                    }
+
+                    if (validSpots.length > 0) {
+                        let spot = validSpots[Math.floor(Math.random() * validSpots.length)];
+                        let tileW = Config.map_tile_width || 420;
+                        let tileH = Config.map_tile_height || 420;
+                        let room = global.gameManager.room;
+                        
+                        let leftEdge = typeof room.x !== 'undefined' ? room.x : -(grid[0].length * tileW) / 2;
+                        let topEdge = typeof room.y !== 'undefined' ? room.y : -(grid.length * tileH) / 2;
+
+                        let jitterX = (Math.random() - 0.5) * (tileW * 0.8);
+                        let jitterY = (Math.random() - 0.5) * (tileH * 0.8);
+
+                        spawnLocation = {
+                            x: leftEdge + (spot.col * tileW) + (tileW / 2) + jitterX,
+                            y: topEdge + (spot.row * tileH) + (tileH / 2) + jitterY
+                        };
+                    }
+                } catch (err) {
+                    console.error(`[Server Travel] Map scanner failed on ${roomDataFile}.js:`, err);
+                }
+            }
+
+            // Fallback
+            if (!spawnLocation) {
+                spawnLocation = global.gameManager.room.random();
+            }
+
+            let portal = new Portal(server.name, server.players, server.destination, server.ip);
+            let portalLifespan = 30000; 
+            
+            portal.spawn(spawnLocation, this.color, portalLifespan);
+
+            // Successfully spawned, queue the cleanup
+            setTimeout(() => {
+                serverTravelHandler.pendingPortalSpawns.delete(server.destination);
+            }, portalLifespan);
+
+        } catch (fatalError) {
+            console.error("[Server Travel] Fatal Spawn Error:", fatalError);
+            // FAILSAFE: Force clear the tracker if a crash occurred so the room isn't permanently locked
+            if (this.self && this.self.ip) {
+                serverTravelHandler.pendingPortalSpawns.forEach(dest => {
+                    if (dest.includes(this.self.ip)) serverTravelHandler.pendingPortalSpawns.delete(dest);
+                });
             }
         }
     }
 }
+
 if (loadedAddons.includes("chatCommands")) {
     addChatCommand({
         command: ["join", "j"],

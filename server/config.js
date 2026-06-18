@@ -33,7 +33,23 @@ module.exports = {
             properties: { // This overrides settings in the config.js file, assuming the selected gamemode doesn't also override it.
                 teams: 4,
                 bot_cap: 20,
-                allow_server_travel: true
+                allow_server_travel: true,
+                server_travel_properties: {
+                    loop_interval: 10000, // how often the portal loop executes in seconds
+                    portals: 1, // amount of portals to spawn
+                },
+                server_travel: [
+                    {
+                        // Dynamically chooses local port 4001 or live port 3001
+                        ip: process.env.NODE_ENV === 'local' ? 'localhost:4003' : 'rearras.dev:3003', 
+                        portal_properties: {
+                            spawn_chance: 2, 
+                            color: 'blue',
+                            roomData: '', 
+                            location: 'prt1' 
+                        }
+                    }
+                ]
             }
         },
         {
@@ -58,15 +74,18 @@ module.exports = {
                 bot_cap: 0,
                 allow_server_travel: true,
                 server_travel_properties: {
-                    loop_interval: 1000, // how often the portal loop executes in seconds
+                    loop_interval: 10000, // how often the portal loop executes in seconds
                     portals: 1, // amount of portals to spawn
                 },
                 server_travel: [
                     {
-                        ip: '<YourIP>', // destination server host, don't add "https://" or any slashes to it
+                        // Dynamically chooses local port 4001 or live port 3001
+                        ip: process.env.NODE_ENV === 'local' ? 'localhost:4003' : 'rearras.dev:3003', 
                         portal_properties: {
-                            spawn_chance: 3, // chance for a portal to spawn somewhere in the map each loop iteration (higher = lower chances, lower = higher chance)
-                            color: 'red', // portal color
+                            spawn_chance: 2, 
+                            color: 'blue',
+                            roomData: 'room_siege_blitz_portals', 
+                            location: 'prt1' 
                         }
                     }
                 ]
@@ -90,7 +109,7 @@ module.exports = {
                 
                 // --- NEW PORTAL LOGIC ---
                 server_travel_properties: {
-                    loop_interval: 1000, // Executes every 10 seconds
+                    loop_interval: 10000, // Executes every 10 seconds
                     portals: 3, // Allows up to 3 portals to exist at once
                 },
                 server_travel: [
