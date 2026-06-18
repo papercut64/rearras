@@ -105,26 +105,44 @@ server = http.createServer((req, res) => {
     // Handle specific API endpoints based on the request URL
     switch (pathname) {
         case "/getServers.json": {
-            // Serve a list of active servers (excluding hidden ones)
-            readString = JSON.stringify(servers.filter((s) => s && !s.hidden).map((server) => ({
-                ip: server.ip,
-                players: server.players,
-                maxPlayers: server.maxPlayers,
-                id: server.id,
-                featured: server.featured,
-                region: server.region,
-                gameMode: server.gameMode,
-            })));
-        } break;
-        case "/getTotalPlayers": {
-            let countPlayers = 0;
-            servers.forEach((s) => {
-                countPlayers += s.players;
-            });
-            readString = JSON.stringify(countPlayers);
-        } break;
-        case "/version": {
-            readString = JSON.stringify({ver: 'v' + pjson.version, devBuild: Config.devBuild});
+            readString = JSON.stringify([
+                {
+                    ip: "153.75.91.27:3001", // Your raw IP + room la port
+                    players: global.servers[0]?.players || 0,
+                    maxPlayers: 80,
+                    id: "la",
+                    featured: false,
+                    region: "Local",
+                    gameMode: "TDM"
+                },
+                {
+                    ip: "153.75.91.27:3002", // Your raw IP + room lx port
+                    players: global.servers[1]?.players || 0,
+                    maxPlayers: 80,
+                    id: "ls",
+                    featured: false,
+                    region: "Local",
+                    gameMode: "Siege Blitz"
+                },
+                                {
+                    ip: "153.75.91.27:3003", // Your raw IP + room lx port
+                    players: global.servers[2]?.players || 0,
+                    maxPlayers: 80,
+                    id: "lx",
+                    featured: false,
+                    region: "Local",
+                    gameMode: "Nexus"
+                },
+                                {
+                    ip: "153.75.91.27:3099", // Your raw IP + room lx port
+                    players: global.servers[3]?.players || 0,
+                    maxPlayers: 80,
+                    id: "lz",
+                    featured: false,
+                    region: "Local",
+                    gameMode: "Sandbox"
+                }
+            ]);
         } break;
         
         case "/api/getAddonAuthors": {
